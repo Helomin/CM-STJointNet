@@ -429,10 +429,10 @@ class STJointEncoder(nn.Module):
                                  downscaling_factor=downscaling_factors[3], num_heads=heads[3])
         
     def forward(self, x):
-        x1 = self.stage1(x)     # (4, 96, 72, 72)
-        x2 = self.stage2(x1)    # (4, 192, 36, 36)
-        x3 = self.stage3(x2)    # (4, 384, 18, 18)
-        x4 = self.stage4(x3)    # (4, 768, 9, 9)
+        x1 = self.stage1(x)     # (4, 96, 32, 32)
+        x2 = self.stage2(x1)    # (4, 192, 16, 16)
+        x3 = self.stage3(x2)    # (4, 384, 8, 8)
+        x4 = self.stage4(x3)    # (4, 768, 4, 4)
         return x1, x2, x3, x4
 
 
@@ -452,10 +452,10 @@ class STJointDecoder(nn.Module):
                                 layers=layers[0], upscaling_factor=downscaling_factors[0], num_heads=heads[0])
     
     def forward(self, x, x3, x2, x1):
-        x = self.stage1(x, x3)    # (4, 768, 18, 18)
-        x = self.stage2(x, x2)    # (4, 384, 36, 36)
-        x = self.stage3(x, x1)    # (4, 192, 72, 72)
-        x = self.stage4(x)        # (4, 9, 288, 288)
+        x = self.stage1(x, x3)    # (4, 768, 8, 8)
+        x = self.stage2(x, x2)    # (4, 384, 16, 16)
+        x = self.stage3(x, x1)    # (4, 192, 32, 32)
+        x = self.stage4(x)        # (4, 12, 128, 128)
         return x
     
 
@@ -515,20 +515,20 @@ class MMSTJointDecoder(nn.Module):
 
     def forward(self, x, x3, x2, x1, y, y3, y2, y1):
         x = x + y
-        x = self.echo_stage1(x, x3)    # (4, 768, 18, 18)
-        y = self.sate_stage1(y, y3)    # (4, 768, 18, 18)
+        x = self.echo_stage1(x, x3)    # (4, 768, 8, 8)
+        y = self.sate_stage1(y, y3)    # (4, 768, 8, 8)
         x = x + y
         
-        x = self.echo_stage2(x, x2)    # (4, 384, 36, 36)
-        y = self.sate_stage2(y, y2)    # (4, 384, 36, 36)
+        x = self.echo_stage2(x, x2)    # (4, 384, 16, 16)
+        y = self.sate_stage2(y, y2)    # (4, 384, 16, 16)
         x = x + y
         
-        x = self.echo_stage3(x, x1)    # (4, 192, 72, 72)
-        y = self.sate_stage3(y, y1)    # (4, 192, 72, 72)
+        x = self.echo_stage3(x, x1)    # (4, 192, 32, 32)
+        y = self.sate_stage3(y, y1)    # (4, 192, 32, 32)
         x = x + y
         
-        x = self.echo_stage4(x)        # (4, 9, 288, 288)
-        y = self.sate_stage4(y)        # (4, 9, 288, 288)
+        x = self.echo_stage4(x)        # (4, 12, 128, 128)
+        y = self.sate_stage4(y)        # (4, 12, 128, 128)
 
         return x, y
     
