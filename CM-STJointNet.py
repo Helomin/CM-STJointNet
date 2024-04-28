@@ -1,9 +1,11 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from model.MM_STJointGAN import DCNv3_pytorch
+from DCNv3 import DCNv3_pytorch
 from natten import NeighborhoodAttention2D as NeighborhoodAttention
 from timm.models.layers import DropPath
+
+
 
 
 class Residual(nn.Module):
