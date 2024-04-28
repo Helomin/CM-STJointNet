@@ -6,8 +6,6 @@ from natten import NeighborhoodAttention2D as NeighborhoodAttention
 from timm.models.layers import DropPath
 
 
-
-
 class Residual(nn.Module):
     def __init__(self, fn):
         super().__init__()
